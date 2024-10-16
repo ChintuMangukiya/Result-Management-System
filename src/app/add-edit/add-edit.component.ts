@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormArray, FormControl, FormGroup, NgForm, Validators } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 interface std{
   value: number,
@@ -35,7 +35,11 @@ export class AddEditComponent implements OnInit{
   constructor(){
     this.studentForm = new FormGroup({
       'name': new FormControl('', [Validators.required]),
-      'std' : new FormControl('', [Validators.required])
+      'std' : new FormControl('', [Validators.required]),
+      'grNo': new FormControl('', [Validators.required]),
+      'rollNo': new FormControl('',[Validators.required]),
+      'gender': new FormControl('',[Validators.required, Validators.email]),
+      
     })
   }
 
