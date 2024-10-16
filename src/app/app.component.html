@@ -1,0 +1,37 @@
+<app-header></app-header>
+
+<div class="main">
+  <mat-drawer-container class="slid example-container" autosize>
+    <mat-drawer #drawer class="example-sidenav" mode="side">
+      <ul>
+        <li [routerLink]="'home'" [routerLinkActive]="'active'">
+          <a routerLink="home">Home</a>
+        </li>
+        <li [routerLink]="'classes'" [routerLinkActive]="'active'">
+          <a routerLink="classes">Classes</a>
+        </li>
+        <li [routerLink]="'stats'" [routerLinkActive]="'active'">
+          <a routerLink="stats">Statistics</a>
+        </li>
+        <li [routerLink]="'contact'" [routerLinkActive]="'active'">
+          <a routerLink="contact">Contact</a>
+        </li>
+      </ul>
+    </mat-drawer>
+
+
+      <button
+        [class.slided]="slided"
+        [class.notSlided]="!slided"
+        class="slider-btn"
+        type="button"
+        mat-button
+        (click)="drawer.toggle(); slided = !slided"
+      >
+      {{ '>' }}
+      </button>
+  </mat-drawer-container>
+  <section class="takezit">
+    <router-outlet></router-outlet>
+  </section>
+</div>
