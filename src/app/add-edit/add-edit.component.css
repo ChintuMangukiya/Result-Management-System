@@ -1,7 +1,12 @@
-div{
+.form{
     height: 1000px;
     display: flex;
-    width: 100%;
-    flex-direction: column;
-    align-items: center;
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 20px;
+}
+
+.form-field{
+    width: 300px;
+    text-align: center;
 }

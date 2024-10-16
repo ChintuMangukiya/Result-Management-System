@@ -57,7 +57,7 @@ a{
   
   .example-sidenav {
     padding: 20px;
-    width: 285px;
+    min-width: 285px !important;
     border: none;
     box-shadow: 4px 4px 8px rgba(194, 194, 194, 0.459);
   }
@@ -95,9 +95,5 @@ a{
   }
 
   section{
-    width: auto;
-  }
-
-  .example-container:active{
-    background-color: white !important;
+    z-index: 1 !important;
   }

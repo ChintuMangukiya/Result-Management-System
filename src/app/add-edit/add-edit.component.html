@@ -1,7 +1,13 @@
-<div>
-    <form [formGroup]="studentForm" (ngSubmit)="onSubmit()">
+<div class="form">
+    <form class="form" [formGroup]="studentForm" (ngSubmit)="onSubmit()">
 
-        <label for="name">Name</label>
-        <input formControlName="name" type="text" />
+
+        <select class="form-field" id="selectOption" formControlName="std">
+            <option [value]="''">Please Select Standard</option>
+            <option *ngFor="let std of standards" [value]="std.value">{{ std.viewValue }}</option>
+        </select>
+        <input class="form-field" formControlName="name" type="text" placeholder="Enter name"/>
+
+        <button class="form-field" type="submit" [disabled]="!studentForm.valid">submit</button>
     </form>
 </div>
