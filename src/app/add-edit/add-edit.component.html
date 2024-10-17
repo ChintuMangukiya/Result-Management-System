@@ -1,13 +1,30 @@
-<div class="form">
-    <form class="form" [formGroup]="studentForm" (ngSubmit)="onSubmit()">
+<div class="form" *ngIf="!isLoading">
+    <form class="form" [formGroup]="subjectMarksForm" (ngSubmit)="onSubmit()">
 
-
-        <select class="form-field" id="selectOption" formControlName="std">
-            <option [value]="''">Please Select Standard</option>
+        <select [(ngModel)]="std" (change)="getSubjects()" class="form-field" id="selectOption" formControlName="std">
+            <option [value]="-1">-- Please Select Standard --</option>
             <option *ngFor="let std of standards" [value]="std.value">{{ std.viewValue }}</option>
         </select>
         <input class="form-field" formControlName="name" type="text" placeholder="Enter name"/>
 
-        <button class="form-field" type="submit" [disabled]="!studentForm.valid">submit</button>
+        <label class="form-field" for="gender"><input type="radio" formControlName="gender" value="male" />Male
+        <input type="radio" formControlName="gender" value="female" />Female</label>
+
+        <input class="form-field" placeholder="Roll No." type="number" min="1" formControlName="rollNo" />
+
+        <input class="form-field" placeholder="GR no." type="number" min="1" formControlName="grNo"/>
+
+        <div formArrayName="marks">
+            <div *ngFor="let markControl of marksArray.controls; let i = index" [formGroupName]="i">
+              <!-- Subject name -->
+              <!-- Input for marks -->
+              <input class="form-field" type="number" formControlName="marks" [placeholder]="markControl.get('subject')?.value" />
+            </div>
+          </div>
+
+        <button class="form-field" type="submit" [disabled]="subjectMarksForm.invalid || std < 0">submit</button>
+
     </form>
 </div>
+
+<app-loading-spinner *ngIf="isLoading"></app-loading-spinner>
