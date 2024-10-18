@@ -10,7 +10,6 @@ import { DataStorageSrevice } from '../data-storage.service';
 export class HeaderComponent implements OnInit {
 
   constructor(private dataStorageService: DataStorageSrevice){
-
     this.dataStorageService.fetchStudents();
   }
 

@@ -1,6 +1,6 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { map, Subject } from "rxjs";
+import { Subject } from "rxjs";
 
 export interface Student {
     gender: string;
@@ -10,7 +10,6 @@ export interface Student {
     std: string;
     marksArray: {marks:number, subject: string}[];
 }
-
 
   @Injectable({
     providedIn: 'root'
@@ -25,22 +24,28 @@ export class StudentService{
       students: Student[] = [];
 
       getStudents(): Student[] {
-        return this.students;
+        return this.students.slice();
+      }
+
+      getStudent(id:Number):Student | undefined{
+        return this.students.slice().find((e)=>e.grNo == id);
       }
 
       setStudents(students:Student[]){
-        this.students= Array.from(students);
+        this.students = students;
         this.studentChanged.next(this.students.slice());
       }
 
       addStudents(students:Student[]){
-
-        for(const student of students)
+        for(const student of Array.from(students))
         {
           this.students.push(student);
           this.studentChanged.next(this.students.slice());
         }
-        
       }
 
+      clearStudents(){
+        this.students.length = 0;
+        this.studentChanged.next([]);
+      }
 }

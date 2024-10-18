@@ -1,34 +1,32 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { ColDef, FirstDataRenderedEvent } from 'ag-grid-community';
-import { map, Subscription } from 'rxjs';
+import { Component, OnInit } from '@angular/core';
+import { ColDef, Params } from 'ag-grid-community';
+import { Subscription, take } from 'rxjs';
 import { Student, StudentService } from './students.service';
 import { classesService } from 'src/assets/classes.service';
-
 
 @Component({
   selector: 'students-table',
   templateUrl: './students.component.html',
   styleUrls: ['./students.component.css'],
 })
-export class StudentsComponent implements OnInit, OnDestroy {
+export class StudentsComponent implements OnInit {
   public rowData!: Student[];
   studentSubscription!: Subscription;
   public classes!: {};
+
+  students: Student[] = [];
 
   masterDetail = true;
 
   constructor(private studentsService: StudentService, private classService: classesService) {}
 
   ngOnInit(): void {
-    this.rowData = this.studentsService.getStudents();
+    this.studentSubscription = this.studentsService.studentChanged.subscribe((e:Student[])=>{
+      this.rowData = e;
+    });
 
+    this.rowData = this.studentsService.getStudents();
     this.classes = this.classService.getClasses();
-    this.studentSubscription = this.studentsService.studentChanged.subscribe(
-      (students: Student[]) => {
-        this.rowData = students;
-        console.log(this.rowData);
-      }
-    );
   }
   // Column Definitions
   // public columnDefs: ColDef[] = [
@@ -37,21 +35,42 @@ export class StudentsComponent implements OnInit, OnDestroy {
   //   { field: 'price', sortable: true, filter: true },
   // ];
 
-
-  onFirstDataRendered(params: FirstDataRenderedEvent) {
-    // arbitrarily expand a row for presentational purposes
-    setTimeout(() => {
-      params.api.getDisplayedRowAtIndex(1)!.setExpanded(true);
-    }, 0);
-  }
-
   public columnDefs: ColDef[] = [
-    { field: 'std', sortable: true, filter: true },
-    { field: 'grNo', sortable: true, filter: true },
-    { field: 'rollNo', sortable: true, filter: true },
-    { field: 'name', sortable: true, filter: true },
-    { field: 'gender', sortable: true, filter: true },
+    { field: 'std',
+      sortable: true, 
+      filter: true , 
+      editable: true, 
+      cellRenderer: (params: any)=>{
+        return `<a style='color:black; text-decoration: none' class='link' href="report-card/${params.value}" target="_blank">${params.value}</a>`;
+      }
+    },
+    { headerName: "Gr No.",field: 'grNo', filter: true,editable: true,
+      cellRenderer: (params: any)=>{
+        return `<a style='color:black; text-decoration: none' class='link' href="report-card/${params.value}" target="_blank">${params.value}</a>`;
+      }
+      , sortable: true
+    },
+    { field: 'rollNo', sortable: true, filter: true, editable: true, 
+      cellRenderer: (params: any)=>{
+        return `<a style='color:black; text-decoration: none' class='link' href="report-card/${params.value}" target="_blank">${params.value}</a>`;
+      }},
+    { field: 'name', sortable: true, filter: true, editable: true, 
+      cellRenderer: (params: any)=>{
+        return `<a style='color:black; text-decoration: none' class='link' href="report-card/${params.value}" target="_blank">${params.value}</a>`;
+      }},
+    { field: 'gender', sortable: true, filter: true, editable: true, 
+      cellRenderer: (params: any)=>{
+        return `<a style='color:black; text-decoration: none' class='link' href="report-card/${params.value}" target="_blank">${params.value}</a>`;
+      }},
+    {
+      field: 'Operartions',
+      cellRenderer: ()=>{
+        return `<a style="background-color:rgb(51, 136, 51); padding: 10px; border: none; border-radius: 3px; color: white">Update</a>
+        <a style="background-color:rgb(228, 65, 65); padding: 10px; border: none; border-radius: 3px; margin-left: 2px; color: white">Delete</a>`
+      }
+    }
   ];
+
 
   // Row Data
   // public rowData = [
@@ -66,13 +85,7 @@ export class StudentsComponent implements OnInit, OnDestroy {
     minWidth: 100,
     resizable: true,
   };
-
-  // Grid ready event handler
-  onGridReady(params: any) {
-    params.api.sizeColumnsToFit();
-  }
-
-  ngOnDestroy(): void {
-    this.studentSubscription.unsubscribe();
+  isRowMaster = (dataItem: any) => {
+    return dataItem ? dataItem.details.length > 0 : false;
   }
 }

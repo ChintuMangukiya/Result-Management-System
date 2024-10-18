@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { classesService } from 'src/assets/classes.service';
+import { DataStorageSrevice } from '../data-storage.service';
 
 interface std {
   value: number;
@@ -43,7 +44,7 @@ export class AddEditComponent implements OnInit {
     { value: 14, viewValue: '12 B' },
   ];
 
-  constructor(private http: HttpClient, private classService: classesService, private router: Router) {
+  constructor(private http: HttpClient, private classService: classesService, private router: Router, public dataStorageService: DataStorageSrevice) {
     this.subjectMarksForm = new FormGroup({
       name: new FormControl(null, [Validators.required]),
       std: new FormControl(null, [Validators.required]),
@@ -57,6 +58,21 @@ export class AddEditComponent implements OnInit {
   ngOnInit(): void {}
 
   onSubmit() {
+
+    switch(this.subjectMarksForm.value.std)
+    {
+      case 11: this.subjectMarksForm.value.std = '11 A';
+           break;
+      case 12: this.subjectMarksForm.value.std = '11 B';
+           break;
+      case 13: this.subjectMarksForm.value.std = '12 A';
+           break;
+      case 14: this.subjectMarksForm.value.std = '12 B';
+           break;
+           
+      default: this.subjectMarksForm.value.std = this.subjectMarksForm.value.std;
+                break;
+    }
 
     this.isLoading = true;
 
@@ -73,24 +89,21 @@ export class AddEditComponent implements OnInit {
           grNo: this.subjectMarksForm.value.grNo,
           rollNo: this.subjectMarksForm.value.rollNo,
           gender: this.subjectMarksForm.value.gender,
-          details: this.subjectMarksForm.value.marks
+          marksArray: this.subjectMarksForm.value.marks
         }
       )
       .subscribe(
-        (resData) => {
-          console.log(resData);
-        },
-        (err) => {
-          console.log(err);
-        }
       );
     this.subjectMarksForm.reset();
 
     this.isLoading = true;
 
+
+
     setTimeout(()=>{
+      this.dataStorageService.fetchStudents();
       this.router.navigate(['/']);
-    this.isLoading = false;
+      this.isLoading = false;
     }, 4000);
 
 
