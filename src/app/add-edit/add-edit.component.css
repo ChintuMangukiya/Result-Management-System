@@ -10,3 +10,17 @@
     width: 300px;
     text-align: center;
 }
+
+.markswithlabel{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.division{
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

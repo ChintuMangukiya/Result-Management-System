@@ -15,9 +15,10 @@
         <input class="form-field" placeholder="GR no." type="number" min="1" formControlName="grNo"/>
 
         <div formArrayName="marks">
-            <div *ngFor="let markControl of marksArray.controls; let i = index" [formGroupName]="i">
+            <div class="markswithlabel" *ngFor="let markControl of marksArray.controls; let i = index" [formGroupName]="i">
               <!-- Subject name -->
               <!-- Input for marks -->
+               <label [for]="markControl.get('subject')?.value">{{ markControl.get('subject')?.value }}</label>
               <input class="form-field" type="number" formControlName="marks" [placeholder]="markControl.get('subject')?.value" />
             </div>
           </div>

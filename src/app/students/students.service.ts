@@ -8,6 +8,7 @@ export interface Student {
     name: string;
     rollNo: number;
     std: string;
+    id: string;
     marksArray: {marks:number, subject: string}[];
 }
 
@@ -27,8 +28,8 @@ export class StudentService{
         return this.students.slice();
       }
 
-      getStudent(id:Number):Student | undefined{
-        return this.students.slice().find((e)=>e.grNo == id);
+      getStudent(id:string):Student | undefined{
+        return this.students.slice().find((e)=>e.id == id);
       }
 
       setStudents(students:Student[]){

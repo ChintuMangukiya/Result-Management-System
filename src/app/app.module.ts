@@ -16,6 +16,7 @@ import { HttpClientModule } from '@angular/common/http';
 import 'ag-grid-enterprise';
 import { LoadingSpinnerComponent } from 'src/shared/Loading-Spinner/loading-spinner.component';
 import { ReportCardComponent } from './report-card/report-card.component';
+import { GradePipe } from './grade.pipe';
 
 
 @NgModule({
@@ -27,7 +28,8 @@ import { ReportCardComponent } from './report-card/report-card.component';
     HeaderComponent,
     ContactComponent,
     LoadingSpinnerComponent,
-    ReportCardComponent
+    ReportCardComponent,
+    GradePipe
   ],
   imports: [
     ReactiveFormsModule,

@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable, OnDestroy, OnInit } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { Student, StudentService } from './students/students.service';
 import { map, Subscription, take } from 'rxjs';
 
@@ -9,6 +9,8 @@ import { map, Subscription, take } from 'rxjs';
 export class DataStorageSrevice{
   totalStudents!: Student[];
 
+
+  stds: Student[] = [];
   subscription!: Subscription;
 
   constructor(
@@ -25,16 +27,17 @@ export class DataStorageSrevice{
         .get<Student[]>(
           'https://result-management-system-7b457-default-rtdb.firebaseio.com/students.json'
         )
-        .pipe(take(1),
+        .pipe(
+          take(1),
           map((students) => {
-            const stds = [];
+
             for (const key in students) {
-              stds.push(students[key]);
+              this.stds.push({...students[key], id:key});
             }
 
-            students = Array.from(stds);
+            students = Array.from(this.stds);
             this.studentService.addStudents(students);
-            return stds;
+            return this.stds;
 
             // return students.map((student,i)=>{
             //   return {

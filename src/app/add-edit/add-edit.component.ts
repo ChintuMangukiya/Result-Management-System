@@ -25,7 +25,7 @@ export class AddEditComponent implements OnInit {
 
   subjects!: any[];
 
-  id : number = 0;
+  id : string = '';
 
   editMode = false;
 
@@ -35,7 +35,7 @@ export class AddEditComponent implements OnInit {
 
   std = -1;
 
-  Student: any;
+  Student?: Student;
 
   standards: std[] = [
     { value: 1, viewValue: '1' },
@@ -67,7 +67,7 @@ export class AddEditComponent implements OnInit {
 
   ngOnInit(): void {
     this.route.params.subscribe((params)=>{
-      this.id = +params['id'];
+      this.id = params['id'];
       this.editMode = params['id'] != null;
       this.initForm();
     });
@@ -122,7 +122,6 @@ export class AddEditComponent implements OnInit {
 
     this.isLoading = true;
 
-    console.log(this.subjectMarksForm.value);
 
 
     if(!this.editMode)
@@ -141,23 +140,34 @@ export class AddEditComponent implements OnInit {
       )
       .subscribe(
       );
+
+  }
+
+  else{
+    const url = `https://result-management-system-7b457-default-rtdb.firebaseio.com/students/${this.Student?.id}.json`;
+
+    const newData = {
+      name: this.subjectMarksForm.value.name,
+      std: this.subjectMarksForm.value.std,
+      grNo: this.subjectMarksForm.value.grNo,
+      rollNo: this.subjectMarksForm.value.rollNo,
+      gender: this.subjectMarksForm.value.gender,
+      marksArray: this.subjectMarksForm.value.marks
+    };
+
+    this.http.patch(url,newData).subscribe(()=>{});
+
+    }
+
     this.subjectMarksForm.reset();
 
     this.isLoading = true;
-
-
 
     setTimeout(()=>{
       this.dataStorageService.fetchStudents();
       this.router.navigate(['/']);
       this.isLoading = false;
     }, 4000);
-  }
-
-  else{
-    // const url = `https://result-management-system-7b457-default-rtdb.firebaseio.com/students/${this.Student.}`
-  }
-
   }
 
   get marksArray(): FormArray{

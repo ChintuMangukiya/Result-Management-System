@@ -12,7 +12,7 @@ import { FirebaseService } from './firebase.service';
 })
 export class StudentsComponent implements OnInit{
 
-  paginationPageSizeSelector = [2, 5, 100];
+  paginationPageSizeSelector = [2, 5, 10];
 
   public rowData: Student[] = [];
 
@@ -40,25 +40,28 @@ export class StudentsComponent implements OnInit{
       editable: true, 
       sort: 'asc',
       cellRenderer: (params: any)=>{
-        return `<a style='color:black; text-decoration: none' class='link' href="report-card/${params.data.grNo}" target="_blank">${params.value}</a>`;
+        return `<a style='color:black; text-decoration: none' class='link' href="report-card/${params.data.id}" target="_blank">${params.value}</a>`;
       }
     },
     { headerName: "Gr No.",field: 'grNo', filter: true,editable: true,
       cellRenderer: (params: any)=>{
-        return `<a style='color:black; text-decoration: none' class='link' href="report-card/${params.data.grNo}" target="_blank">${params.value}</a>`;
+        return `<a style='color:black; text-decoration: none' class='link' href="report-card/${params.data.id}" target="_blank">${params.value}</a>`;
       }
       , sortable: true
     },
     { field: 'rollNo', sortable: true, filter: true, editable: true, 
       cellRenderer: (params: any)=>{
-        return `<a style='color:black; text-decoration: none' class='link' href="report-card/${params.data.grNo}" target="_blank">${params.value}</a>`;
+        return `<a style='color:black; text-decoration: none' class='link' href="report-card/${params.data.id}" target="_blank">${params.value}</a>`;
       }},
     { field: 'name', sortable: true, filter: true, editable: true, 
       cellRenderer: (params: any)=>{
-        return `<a style='color:black; text-decoration: none' class='link' href="report-card/${params.data.grNo}" target="_blank">${params.value}</a>`;
+        return `<a style='color:black; text-decoration: none' class='link' href="report-card/${params.data.id}" target="_blank">${params.value}</a>`;
       }},
     { field: 'gender', sortable: true, filter: true, editable: false, 
       cellRenderer: (params: any) => {
+
+        console.log(params);
+
         const maleChecked = params.value === 'male' ? 'checked' : '';
         const femaleChecked = params.value === 'female' ? 'checked' : '';
 
@@ -78,25 +81,16 @@ export class StudentsComponent implements OnInit{
     {
       field: 'Operartions',
       sortable: false,
-      cellRenderer: ()=>{
-        return `<a style="background-color:rgb(51, 136, 51); padding: 8px; width: 100px !important; border: none; margin-right: 4px; border-radius: 4px; color: white">Update</a>
-        <a style="background-color:rgb(228, 65, 65); padding: 8px; border: none; width: 100px !important; border-radius: 4px; margin-left: 2px; color: white">Delete</a>`
+      cellRenderer: (params: any)=>{
+        return `<a href="edit/${params.data.id}" style="background-color:rgb(51, 136, 51); padding: 8px; width: 100px !important; border: none; margin-right: 4px; border-radius: 4px; color: white">Update</a>
+        <a onclick="${this.delete(params.data.id)}" style="background-color:rgb(228, 65, 65); padding: 8px; border: none; width: 100px !important; border-radius: 4px; margin-left: 2px; color: white">Delete</a>`
       }
     }
   ];
 
+  delete(id:string){
 
-
-  onGridReady(params: any) {
-    params.api.forEachNode((node: any) => {
-      if (!node.data.gender) {
-        node.data.gender = 'male'; // Set default 'Male' for rows with no gender
-      }
-    });
-    params.api.refreshCells(); // Ensure that the grid reflects the default values
-    params.api.sizeColumnsToFit();
   }
-
 
   onCellValueChanged(params: any) {
     console.log('Gender changed to: ', params.data.gender);

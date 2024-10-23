@@ -11,36 +11,61 @@ import { HttpClient } from '@angular/common/http';
   styleUrls: ['./report-card.component.css']
 })
 
-export class ReportCardComponent implements OnInit{
+export class ReportCardComponent implements OnInit {
 
-  failed= false;
+  failed = false;
 
-  id: number = 0;
+  id: string = '';
+
+  studentNotFound?: boolean;
+
+  isLoading = true;
+
+  total = 0;
+
+  subLength = 0;
 
   Student: Student | undefined;
 
   studentSubscription!: Subscription;
 
-  constructor( private http: HttpClient,private route: ActivatedRoute, private studentsService: StudentService, private dataStorageService: DataStorageSrevice){
+  constructor(private http: HttpClient, private route: ActivatedRoute, private studentsService: StudentService, private dataStorageService: DataStorageSrevice) {
 
-  } 
+  }
+
+
+
 
   ngOnInit(): void {
 
-    this.route.params.subscribe((params: Params)=>{
-      this.id = +params['id'];
+    this.route.params.subscribe((params: Params) => {
+      this.id = params['id'];
     });
 
-    this.studentSubscription = this.studentsService.studentChanged.subscribe((e:Student[])=>{
+    this.studentSubscription = this.studentsService.studentChanged.subscribe((e: Student[]) => {
       this.Student = this.studentsService.getStudent(this.id);
 
-      if(this.Student?.marksArray.every(e => {
-        if(e.marks < 33)
-        {
+      if(!this.Student){
+        this.studentNotFound = true;
+      }
+      else{
+        this.studentNotFound = false;
+      }
+
+      this.isLoading= false;
+
+      this.subLength = this.Student?.marksArray.length || 1;
+
+      this.Student?.marksArray.every(e => {
+        if (e.marks < 33) {
           this.failed = true;
         }
-      }))
-      console.log(this.Student);
-    });
+
+        this.total = this.total + e.marks;
+
+      })
+    }
+
+    );
   }
 }

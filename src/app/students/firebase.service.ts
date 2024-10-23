@@ -5,7 +5,7 @@ import { Student, StudentService } from './students.service';
 import { map } from 'rxjs';
 
 export interface FirebaseDataResponse{
-  [id:string] : Student;
+  [id : string] : Student;
 }
 
 @Injectable({
@@ -17,8 +17,8 @@ export class FirebaseService {
   constructor(private http: HttpClient, private studentsService: StudentService) {}
 
   // Fetch paginated data from a specific path
-  getData(page: number, pageSize: number): Observable<any> {
-    return this.http.get<FirebaseDataResponse>(`${this.baseUrl}?page=${page}&pageSize=${pageSize}`)
+  getData(page: number, pageSize: number): Observable<Student[]> {
+    return this.http.get<any>(`${this.baseUrl}?page=${page}&pageSize=${pageSize}`)
     .pipe(
         map((data) =>{
             const dataArray = Object.keys(data).map((key)=> ({
@@ -32,6 +32,5 @@ export class FirebaseService {
           }
         )
       );
-
   }
 }
