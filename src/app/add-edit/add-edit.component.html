@@ -22,7 +22,8 @@
             </div>
           </div>
 
-        <button class="form-field" type="submit" [disabled]="subjectMarksForm.invalid || std < 0">submit</button>
+        <button class="form-field" type="submit" [disabled]="subjectMarksForm.invalid || std < 0" *ngIf="!editMode">submit</button>
+        <button class="form-field" type="submit" [disabled]="subjectMarksForm.invalid || std < 0" *ngIf="editMode">Edit</button>
 
     </form>
 </div>

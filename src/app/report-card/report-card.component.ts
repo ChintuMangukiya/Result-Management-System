@@ -25,16 +25,18 @@ export class ReportCardComponent implements OnInit{
 
   } 
 
-  
-
   ngOnInit(): void {
+
+
 
     this.route.params.subscribe((params: Params)=>{
       this.id = +params['id'];
+     
     });
 
     this.studentSubscription = this.studentsService.studentChanged.subscribe((e:Student[])=>{
       this.Student = this.studentsService.getStudent(this.id);
+
       if(this.Student?.marksArray.every(e => {
         if(e.marks < 33)
         {
