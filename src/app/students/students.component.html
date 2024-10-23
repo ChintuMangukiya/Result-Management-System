@@ -6,5 +6,7 @@
   [masterDetail]="true"
   [defaultColDef]="defaultColDef"
   [pagination]="true"
+  (gridReady)="onGridReady($event)"
+  (cellValueChanged)="onCellValueChanged($event)"
   [domLayout]="'autoHeight'">
 </ag-grid-angular>
