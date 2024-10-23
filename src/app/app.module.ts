@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { AppComponent } from './app.component';
-import { AgGridModule } from 'ag-grid-angular';
+import { AgGridAngular, AgGridModule } from 'ag-grid-angular';
 import { StudentsComponent } from './students/students.component';
 import { HomeComponent } from './home/home.component';
 import { AppRoutingModule } from './app-routing.module';
@@ -35,6 +35,7 @@ import { ReportCardComponent } from './report-card/report-card.component';
     HttpClientModule,
     AppRoutingModule,
     AgGridModule,
+    AgGridAngular,
     BrowserAnimationsModule, // AgGridModule imported here
     MaterialModule,
     MatSidenavModule

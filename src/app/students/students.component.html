@@ -3,10 +3,12 @@
   class="ag-theme-alpine"
   [rowData]="rowData"
   [columnDefs]="columnDefs"
-  [masterDetail]="true"
   [defaultColDef]="defaultColDef"
   [pagination]="true"
+  [domLayout]="'autoHeight'"
+  [paginationPageSize]="pageSize"
   (gridReady)="onGridReady($event)"
-  (cellValueChanged)="onCellValueChanged($event)"
-  [domLayout]="'autoHeight'">
+  (paginationChanged)="onPaginationChanged()"
+  [paginationPageSizeSelector]="paginationPageSizeSelector"
+  >
 </ag-grid-angular>

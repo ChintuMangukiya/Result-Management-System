@@ -20,13 +20,10 @@ export class DataStorageSrevice{
 
     this.studentService.clearStudents();
 
-    for (let i = 1; i <= 14; i++) {
 
       this.http
         .get<Student[]>(
-          'https://result-management-system-7b457-default-rtdb.firebaseio.com/class_' +
-            String(i)+
-            '.json'
+          'https://result-management-system-7b457-default-rtdb.firebaseio.com/students.json'
         )
         .pipe(take(1),
           map((students) => {
@@ -34,6 +31,9 @@ export class DataStorageSrevice{
             for (const key in students) {
               stds.push(students[key]);
             }
+
+            students = Array.from(stds);
+            this.studentService.addStudents(students);
             return stds;
 
             // return students.map((student,i)=>{
@@ -45,12 +45,8 @@ export class DataStorageSrevice{
           })
         )
         .subscribe((students: Student[]) => {
-
-          students = Array.from(students);
-             this.studentService.addStudents(students);
         });
     }
 
-  }
 
 }

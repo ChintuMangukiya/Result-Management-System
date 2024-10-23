@@ -5,6 +5,7 @@ export interface ICallRecord {
     switchCode: string;
     direction: string;
     number: string;
+    id: string
 }
 
 export interface marksArray {

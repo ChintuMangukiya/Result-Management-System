@@ -14,6 +14,7 @@ const routes: Routes = [
   { path: 'stats', component: StatisticsComponent },
   { path: 'contact', component: ContactComponent },
   { path: 'add', component: AddEditComponent },
+  { path: 'edit/:id', component: AddEditComponent },
   { path: 'report-card/:id', component: ReportCardComponent },
   { path: '**', redirectTo: 'home' }
 ];
