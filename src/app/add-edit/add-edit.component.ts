@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { classesService } from 'src/assets/classes.service';
@@ -17,7 +17,7 @@ interface std {
   templateUrl: './add-edit.component.html',
   styleUrls: ['./add-edit.component.css'],
 })
-export class AddEditComponent implements OnInit {
+export class AddEditComponent implements OnInit,OnDestroy {
 
   isLoading= false;
 
@@ -29,9 +29,17 @@ export class AddEditComponent implements OnInit {
 
   editMode = false;
 
+  availableRollNo!: number;
+
+  availableGrNo!: number;
+
+  editMode2 = false;
+
   subjectsLazy!: any[];
 
   studentSubscription!: Subscription;
+
+  stds = '0';
 
   std = -1;
 
@@ -55,6 +63,7 @@ export class AddEditComponent implements OnInit {
   ];
 
   constructor(private http: HttpClient, private classService: classesService, private router: Router, public dataStorageService: DataStorageSrevice, public route: ActivatedRoute, private  studentService: StudentService) {
+
     this.subjectMarksForm = new FormGroup({
       name: new FormControl(null, [Validators.required]),
       std: new FormControl(null, [Validators.required]),
@@ -66,25 +75,36 @@ export class AddEditComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.subjectMarksForm.controls['rollNo'].setValue(this.availableRollNo);
+    this.subjectMarksForm.controls['grNo'].setValue(this.availableGrNo);
+
+
     this.route.params.subscribe((params)=>{
       this.id = params['id'];
       this.editMode = params['id'] != null;
+      this.editMode2 = params['id'] != null;
       this.initForm();
     });
-
 
     this.studentSubscription = this.studentService.studentChanged.subscribe((e: Student[])=>{
       this.Student = this.studentService.getStudent(this.id);
+      this.availableGrNo = this.studentService.getAvailableGrNo();
+      this.availableRollNo = this.studentService.getAvailableRollNo(this.stds);
+      this.subjectMarksForm.controls['rollNo'].setValue(this.availableRollNo);
+      this.subjectMarksForm.controls['grNo'].setValue(this.availableGrNo);
+
       this.initForm();
     });
+
+    this.subjectMarksForm.controls['grNo'].disable();
+    this.subjectMarksForm.controls['rollNo'].disable();
   }
 
+  
   private initForm(){
 
     if(this.editMode)
     {
-      console.log(this.editMode);
-      console.log(this.Student);
       this.subjectMarksForm.patchValue({...this.Student});
 
       this.marksArray.clear();
@@ -97,13 +117,15 @@ export class AddEditComponent implements OnInit {
       })
       )
       })
-  
+    }
+    else{
+      this.subjectMarksForm.controls['rollNo'].setValue(this.availableRollNo);
+      this.subjectMarksForm.controls['grNo'].setValue(this.availableGrNo);
+
     }
   }
 
-
   onSubmit() {
-
 
     switch(this.subjectMarksForm.value.std)
     {
@@ -122,8 +144,6 @@ export class AddEditComponent implements OnInit {
 
     this.isLoading = true;
 
-
-
     if(!this.editMode)
       {
     this.http
@@ -132,13 +152,23 @@ export class AddEditComponent implements OnInit {
         {
           name: this.subjectMarksForm.value.name,
           std: this.subjectMarksForm.value.std,
-          grNo: this.subjectMarksForm.value.grNo,
-          rollNo: this.subjectMarksForm.value.rollNo,
+          grNo: this.availableGrNo,
+          rollNo: this.availableRollNo,
           gender: this.subjectMarksForm.value.gender,
           marksArray: this.subjectMarksForm.value.marks
         }
       )
-      .subscribe(
+      .subscribe(()=>{
+        this.subjectMarksForm.reset();
+    
+        this.isLoading = true;
+    
+        setTimeout(()=>{
+          this.dataStorageService.fetchStudents();
+          this.router.navigate(['/']);
+          this.isLoading = false;
+        }, 4000);
+      }
       );
 
   }
@@ -155,19 +185,21 @@ export class AddEditComponent implements OnInit {
       marksArray: this.subjectMarksForm.value.marks
     };
 
-    this.http.patch(url,newData).subscribe(()=>{});
+    this.http.patch(url,newData).subscribe(()=>{
+
+      this.subjectMarksForm.reset();
+
+      this.isLoading = true;
+  
+      setTimeout(()=>{
+        this.dataStorageService.fetchStudents();
+        this.router.navigate(['/']);
+        this.isLoading = false;
+      }, 4000);
+    });
 
     }
 
-    this.subjectMarksForm.reset();
-
-    this.isLoading = true;
-
-    setTimeout(()=>{
-      this.dataStorageService.fetchStudents();
-      this.router.navigate(['/']);
-      this.isLoading = false;
-    }, 4000);
   }
 
   get marksArray(): FormArray{
@@ -177,9 +209,33 @@ export class AddEditComponent implements OnInit {
   getSubjects() {
 
     this.subjects = this.classService.getSubjects(
-      this.subjectMarksForm.value.std - 1
+      (+this.subjectMarksForm.value.std) - 1
     ) || [] ;
-    
+
+    switch(this.subjectMarksForm.value.std + 1)
+    {
+      case 11: this.stds = '11 A';
+               break;
+      case 12: this.stds = '11 B';
+               break;
+      case 13: this.stds = '12 A';
+               break;
+      case 14: this.stds = '12 B';
+               break;
+           
+      default: this.stds = this.subjectMarksForm.value.std.toString();
+               break;
+    }
+
+    this.availableGrNo = this.studentService.getAvailableGrNo();
+    this.availableRollNo = this.studentService.getAvailableRollNo(this.stds);
+
+
+    this.subjectMarksForm.controls['rollNo'].setValue(this.availableRollNo);
+    this.subjectMarksForm.controls['grNo'].setValue(this.availableGrNo);
+
+    this.editMode2 = false;
+
     this.marksArray.clear();
 
     this.subjects.forEach((subject)=> {
@@ -191,5 +247,9 @@ export class AddEditComponent implements OnInit {
     )
     })
 
+  }
+
+  ngOnDestroy(): void {
+    this.studentSubscription.unsubscribe();
   }
 }

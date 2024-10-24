@@ -1,52 +1,80 @@
-import { HttpClient } from "@angular/common/http";
-import { Injectable } from "@angular/core";
-import { Subject } from "rxjs";
+import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { Subject } from 'rxjs';
 
 export interface Student {
-    gender: string;
-    grNo: number;
-    name: string;
-    rollNo: number;
-    std: string;
-    id: string;
-    marksArray: {marks:number, subject: string}[];
+  gender: string;
+  grNo: number;
+  name: string;
+  rollNo: number;
+  std: string;
+  id: string;
+  marksArray: { marks: number; subject: string }[];
 }
 
-  @Injectable({
-    providedIn: 'root'
-  })
+@Injectable({
+  providedIn: 'root',
+})
+export class StudentService {
+  constructor(private http: HttpClient) {}
 
-export class StudentService{
+  studentChanged = new Subject<Student[]>();
 
-    constructor(private http: HttpClient){}
+  students: Student[] = [];
 
-    studentChanged = new Subject<Student[]>();
+  getStudents(): Student[] {
+    return this.students.slice();
+  }
 
-      students: Student[] = [];
+  getStudent(id: string): Student | undefined {
+    return this.students.slice().find((e) => e.id == id);
+  }
 
-      getStudents(): Student[] {
-        return this.students.slice();
+  setStudents(students: Student[]) {
+    this.students = students;
+    this.studentChanged.next(this.students.slice());
+  }
+
+  addStudents(students: Student[]) {
+    for (const student of Array.from(students)) {
+      this.students.push(student);
+    }
+    this.studentChanged.next(this.students.slice());
+  }
+
+  clearStudents() {
+    this.students.length = 0;
+    this.studentChanged.next([]);
+  }
+
+  getAvailableGrNo(): number {
+    let students = this.students.sort((a, b) => a.grNo - b.grNo);
+
+    console.log(students.length);
+    let i = 0;
+    while (students[i] != null) {
+      if (students[i].grNo != i + 1) {
+        return i + 1;
       }
+      i++;
+    }
 
-      getStudent(id:string):Student | undefined{
-        return this.students.slice().find((e)=>e.id == id);
-      }
+    return i + 1;
+  }
 
-      setStudents(students:Student[]){
-        this.students = students;
-        this.studentChanged.next(this.students.slice());
-      }
+  getAvailableRollNo(std: string): number {
+    let students = this.students.filter((student) => student.std === std);
 
-      addStudents(students:Student[]){
-        for(const student of Array.from(students))
-        {
-          this.students.push(student);
-          this.studentChanged.next(this.students.slice());
-        }
-      }
+    console.log(students.length);
+    let i = 0;
 
-      clearStudents(){
-        this.students.length = 0;
-        this.studentChanged.next([]);
+    while (students[i] != null) {
+      if (students[i].rollNo != i + 1) {
+        return i + 1;
       }
+      i++;
+    }
+
+    return i + 1;
+  }
 }

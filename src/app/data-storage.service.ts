@@ -22,7 +22,6 @@ export class DataStorageSrevice{
 
     this.studentService.clearStudents();
 
-
       this.http
         .get<Student[]>(
           'https://result-management-system-7b457-default-rtdb.firebaseio.com/students.json'
@@ -48,6 +47,7 @@ export class DataStorageSrevice{
           })
         )
         .subscribe((students: Student[]) => {
+          this.studentService.addStudents([...students]);
         });
     }
 

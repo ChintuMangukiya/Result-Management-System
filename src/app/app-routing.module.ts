@@ -6,6 +6,7 @@ import { StatisticsComponent } from './statistics/statistics.component';
 import { ContactComponent } from './contact/contact.component';
 import { AddEditComponent } from './add-edit/add-edit.component';
 import { ReportCardComponent } from './report-card/report-card.component';
+import { DeleteAlertComponent } from './delete-alert/delete-alert.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full' },
@@ -16,6 +17,7 @@ const routes: Routes = [
   { path: 'add', component: AddEditComponent },
   { path: 'edit/:id', component: AddEditComponent },
   { path: 'report-card/:id', component: ReportCardComponent },
+  { path: 'delete/:id', component: DeleteAlertComponent },
   { path: '**', redirectTo: 'home' }
 ];
 

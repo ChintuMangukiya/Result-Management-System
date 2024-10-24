@@ -3,6 +3,10 @@ import { ColDef } from 'ag-grid-community';
 import { Subscription } from 'rxjs';
 import { Student, StudentService } from './students.service';
 import { FirebaseService } from './firebase.service';
+import { HttpClient } from '@angular/common/http';
+
+
+
 
 
 @Component({
@@ -29,7 +33,7 @@ export class StudentsComponent implements OnInit{
     this.loadCompleteData();
   }
 
-  constructor(private firebaseServeice: FirebaseService, private studentService: StudentService) {}
+  constructor(private firebaseServeice: FirebaseService, private studentService: StudentService, private http: HttpClient) {}
   public pageSize = 2;
 
 
@@ -82,21 +86,25 @@ export class StudentsComponent implements OnInit{
       field: 'Operartions',
       sortable: false,
       cellRenderer: (params: any)=>{
-        return `<a href="edit/${params.data.id}" style="background-color:rgb(51, 136, 51); padding: 8px; width: 100px !important; border: none; margin-right: 4px; border-radius: 4px; color: white">Update</a>
-        <a onclick="${this.delete(params.data.id)}" style="background-color:rgb(228, 65, 65); padding: 8px; border: none; width: 100px !important; border-radius: 4px; margin-left: 2px; color: white">Delete</a>`
+
+        function ondelete()
+        {
+          alert("Hi");
+        }
+
+        return `<a target="_blank" href="edit/${params.data.id}" style="background-color:rgb(51, 136, 51); padding: 8px; width: 100px !important; border: none; margin-right: 4px; border-radius: 4px; color: white; text-decoration: none;" >Update</a>
+        <a href="delete/${params.data.id}" onclick="" style="background-color:rgb(228, 65, 65); border: none;padding: 8px; width: 60px !important; border-radius: 4px; margin-left: 2px; color: white; text-decoration: none;" >Delete</a>`
+
       }
     }
   ];
 
-  delete(id:string){
 
-  }
 
   onCellValueChanged(params: any) {
     console.log('Gender changed to: ', params.data.gender);
   }
-
-
+  
 
   onGridReady(params: any) {
     this.gridApi = params.api; // Store the grid API

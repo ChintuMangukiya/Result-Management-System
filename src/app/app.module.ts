@@ -17,7 +17,7 @@ import 'ag-grid-enterprise';
 import { LoadingSpinnerComponent } from 'src/shared/Loading-Spinner/loading-spinner.component';
 import { ReportCardComponent } from './report-card/report-card.component';
 import { GradePipe } from './grade.pipe';
-
+import { DeleteAlertComponent } from './delete-alert/delete-alert.component';
 
 @NgModule({
   declarations: [
@@ -29,7 +29,8 @@ import { GradePipe } from './grade.pipe';
     ContactComponent,
     LoadingSpinnerComponent,
     ReportCardComponent,
-    GradePipe
+    GradePipe,
+    DeleteAlertComponent
   ],
   imports: [
     ReactiveFormsModule,

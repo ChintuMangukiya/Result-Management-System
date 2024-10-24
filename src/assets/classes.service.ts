@@ -133,7 +133,6 @@ private classes = [
       'Physical Education',
     ],
 ];
- 
   
   getSubjects(cla:number){
     return this.classes[cla];
